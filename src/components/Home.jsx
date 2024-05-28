@@ -1,5 +1,5 @@
 import axios from '../helper/Instance.jsx';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
@@ -14,6 +14,17 @@ const Home = () => {
     console.log('submit hogya');
     navigate('/about')
   }
+  useEffect(()=>{
+    if(Users.length === 0) getUser();
+    console.log("page mounting");
+    return ()=>{
+      console.log("page unmounting");
+    }
+  },[Users]);
+  
+
+  console.log("page loading");
+
   return (
     <>
     <form className='flex flex-col gap-3 items-center justify-center' onSubmit={submithandle}>
