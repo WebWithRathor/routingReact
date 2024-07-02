@@ -1,42 +1,37 @@
-import axios from '../helper/Instance.jsx';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-  const [Users, setUsers] = useState([])
-  const navigate = useNavigate()
-  const getUser =async ()=>{
-    const {data} =await axios.get('/users');
-    setUsers([...data]);
+
+  const [page, setPage] = useState(1)
+  const [images, setImages] = useState([]);
+  console.log(images);
+  const getimages =async ()=>{
+      const {data}= await axios.get(`https://picsum.photos/v2/list?page=${page}&limit=10`);
+      setImages(data);
   }
-  const submithandle = (e)=>{
-    e.preventDefault();
-    console.log('submit hogya');
-    navigate('/about')
-  }
-  useEffect(()=>{
-    if(Users.length === 0) getUser();
-    console.log("page mounting");
-    return ()=>{
-      console.log("page unmounting");
-    }
-  },[Users]);
+  const arr = [1,2,3,4,5,6,7,7,8]
+
+  useEffect(() => {
+    console.log(arr[page]);
+    getimages();
+  }, [page])
   
-
-  console.log("page loading");
-
   return (
     <>
-    <form className='flex flex-col gap-3 items-center justify-center' onSubmit={submithandle}>
-      <input type="text" className='border-2 rounded text-lg' />
-      <button className='bg-blue-500 rounded px-2 py-1 text-white font-medium'>submit</button>
-    </form>
-    <button className='bg-blue-500 rounded px-2 py-1 text-white font-medium mt-3' onClick={getUser}>get api</button>
-    <ul className='p-4 text-sm list-disc'>
-      {Users.map((user)=>{
-        return <li key={user.id}>{user.name}</li>
-      })}
-    </ul>
+      <div className="images flex gap-5 flex-wrap justify-center px-16 my-10">
+       {images.length > 0 ? 
+       images.map(image => <img key={image.id} className="h-36 w-36 rounded" src={image.download_url} alt="" />
+      ) :
+        <h1>no images here</h1>
+        }
+      </div>
+      
+      <div className="pagination flex items-center justify-center gap-4">
+        <button onClick={()=> page>1 && setPage(page - 1)} className='px-5 py-3 bg-blue-500 rounded text-white'>prev</button>
+        <h1>{page}</h1>
+        <button onClick={()=> setPage(page+1)} className='px-5 py-3 bg-blue-500 rounded text-white'>Next</button>
+      </div>
     </>
   )
 }
